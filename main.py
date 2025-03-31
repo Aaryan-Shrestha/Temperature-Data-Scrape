@@ -1,6 +1,9 @@
 import requests, selectorlib, time
+import sqlite3
 
 URL = "https://programmer100.pythonanywhere.com/"
+
+connection = sqlite3.connect("date_temps")
 
 def scrape(url):
     response = requests.get(url)
@@ -15,9 +18,9 @@ def extract(source):
 
 
 def store(time, data):
-    with open("data.txt", "a") as file:
-        text = time + "," + data
-        file.write(text + "\n")
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO scrape VALUES (?, ?)", (time, data))
+    connection.commit()
 
 
 if __name__ == "__main__":
